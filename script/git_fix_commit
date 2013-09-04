@@ -1,9 +1,0 @@
-#!/bin/bash
-
-dir=fix_commits
-
-mkdir $dir 2>/dev/null
-
-for i in `git log --grep='fix' | sed -rn "s/commit (\S*)/\1/p"`; do
-   git show $i > $dir/$i;
-done
