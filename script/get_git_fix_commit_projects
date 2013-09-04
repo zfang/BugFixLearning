@@ -10,5 +10,6 @@ for i in $dirname/../../*; do
    if [ "$(basename $i)" == "$this_project" ]; then
       continue
    fi
-   script/get_git_fix_commit $i
+   script/get_git_fix_commit $i &
 done
+wait
