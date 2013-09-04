@@ -3,11 +3,11 @@
 if [ -z "$1" ]
 then
    dir=fix_commits
-   mkdir $dir 2>/dev/null
+   mkdir -p $dir
 else
    project=$(basename $(realpath $1))
-   dir=$(realpath $PWD)/${project}_fix_commits
-   mkdir $dir 2>/dev/null
+   dir=$(realpath $(dirname $0))/../fix_commits/$project
+   mkdir -p $dir
    cd $1
 fi
 
