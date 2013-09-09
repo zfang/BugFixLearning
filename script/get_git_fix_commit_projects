@@ -4,9 +4,11 @@ dirname=$(dirname $0)
 
 this_project=$(basename $(realpath $dirname/..))
 
+project_path=$(realpath $1)
+
 cd $dirname/..
 
-for i in $dirname/../../*; do
+for i in $project_path/*; do
    if [ "$(basename $i)" == "$this_project" ]; then
       continue
    fi
