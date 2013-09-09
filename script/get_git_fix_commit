@@ -12,7 +12,7 @@ else
 fi
 
 
-for i in $(git log --pretty=oneline | grep fix | sed -rn "s/^(\S*) .*/\1/p"); do
+for i in $(git log --pretty=oneline | grep fix | grep -E -v '^\S* \bMerge\b' | sed -rn "s/^(\S*) .*/\1/p"); do
    git show $i > $dir/$i &
 done
 wait
