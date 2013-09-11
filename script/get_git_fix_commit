@@ -11,8 +11,15 @@ else
    cd $1
 fi
 
+cores=$(grep -c processor /proc/cpuinfo)
 
 for i in $(git log --pretty=oneline | grep fix | grep -E -v '^\S* \bMerge\b' | sed -rn "s/^(\S*) .*/\1/p"); do
    git show $i > $dir/$i &
+   joblist=($(jobs -p))
+   while (( ${#joblist[*]} >= $cores ))
+   do
+      sleep 0.001
+      joblist=($(jobs -p))
+   done
 done
 wait
