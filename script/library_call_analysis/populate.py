@@ -5,11 +5,7 @@ from pygit2 import *
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool
 
-path = os.path.dirname(os.path.abspath(sys.argv[0]))
-sys.path.append(path)
-sys.path.append(path+"/library_call_analysis")
-os.environ['DJANGO_SETTINGS_MODULE'] = 'library_call_analysis.settings'
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "library_call_analysis.settings")
 from library_call_analysis import models
 
 re_cs_file_comment = re.compile(r"^\s*(/\*|\*\s|//)")
@@ -17,11 +13,6 @@ re_cs_file_misc = re.compile(r"^\s*({|})\s*$")
 re_cs_file = re.compile(r"\.cs$", re.IGNORECASE)
 re_fixing_commit_message = re.compile(r"(fix|patch|bug)", re.I)
 re_unified_diff_line_numbers = re.compile(r"@@ -(\d+),\d+ \+(\d+),\d+ @@")
-
-re_thread_id = re.compile(r"Thread-(\d+)")
-
-master = "refs/heads/master"
-
 
 repo = None
 db_repo = None
