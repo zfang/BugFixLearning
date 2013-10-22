@@ -1,0 +1,22 @@
+#!/bin/bash
+
+mono dotnetclassextract.exe $@ | tr -d "\`[0-9]*" \
+   | sed -nr "s/^(\S+) (\S+) \S+ [^:]+::([^\(]+)\(.*$/\1 \2 \3/p" \
+   | sed -r "s/^(\S+) (\S+) \.(ctor|cctor)$/\1 \2 \2/p" \
+   | sort -u \
+   > system_class.dat
+
+target_table="library_call_analysis_dotnetlibraryclass"
+temp_table="${target_table}_temp"
+
+printf "\
+CREATE TEMP TABLE ${temp_table} (\n\
+   namespace character varying(128) NOT NULL,\n\
+   classname character varying(128) NOT NULL,\n\
+   function character varying(128) NOT NULL\n\
+);\n\
+\n\
+\\copy ${temp_table} FROM '$(realpath system_class.dat)' WITH DELIMITER AS ' ';\n\
+\n\
+INSERT INTO ${target_table} (namespace, classname, function) SELECT * FROM ${temp_table};\
+" > system_class.sql
