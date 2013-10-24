@@ -11,12 +11,12 @@ temp_table="${target_table}_temp"
 
 printf "\
 CREATE TEMP TABLE ${temp_table} (\n\
-   namespace character varying(128) NOT NULL,\n\
-   classname character varying(128) NOT NULL,\n\
-   function character varying(128) NOT NULL\n\
+   namespace character varying(255) NOT NULL,\n\
+   classname character varying(255) NOT NULL,\n\
+   function character varying(255) NOT NULL\n\
 );\n\
 \n\
 \\copy ${temp_table} FROM '$(realpath system_class.dat)' WITH DELIMITER AS ' ';\n\
 \n\
 INSERT INTO ${target_table} (namespace, classname, function) SELECT * FROM ${temp_table};\
-" > system_class.sql
+" > ../database/system_class.sql

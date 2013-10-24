@@ -102,8 +102,8 @@ def analyze(hex):
       patches = [p for p in diff]
       map(partial(process_diff, hexsha=hex), patches)
    except:
-      raise
-      #pass
+      #raise
+      pass
 
 if __name__ == "__main__":
    if len(sys.argv) < 2:
@@ -118,8 +118,7 @@ if __name__ == "__main__":
 
    db_repo, created = models.Repository.objects.get_or_create(slug=slug)
 
-   master_ref = repo.lookup_reference("refs/heads/master").resolve()
-   commits = repo.walk(master_ref.target, GIT_SORT_NONE)
+   commits = repo.walk(repo.head.target, GIT_SORT_NONE)
 
    commit_hexs = [commit.hex for commit in commits if is_fix_commit(commit)]
 
