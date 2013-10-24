@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 import sys, os, re, threading, difflib, multiprocessing
 from pygit2 import *

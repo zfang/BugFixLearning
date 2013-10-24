@@ -16,7 +16,7 @@ CREATE TEMP TABLE ${temp_table} (\n\
    function character varying(255) NOT NULL\n\
 );\n\
 \n\
-\\copy ${temp_table} FROM '$(realpath system_class.dat)' WITH DELIMITER AS ' ';\n\
+\\copy ${temp_table} FROM '$(readlink -f system_class.dat)' WITH DELIMITER AS ' ';\n\
 \n\
 INSERT INTO ${target_table} (namespace, classname, function) SELECT * FROM ${temp_table};\
 " > ../database/system_class.sql
