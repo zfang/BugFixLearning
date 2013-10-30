@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION analyze_function_calls(_slug varchar) RETURNS 
+CREATE OR REPLACE FUNCTION library_call_analysis_analyze_function_calls(_slug varchar) RETURNS 
 TABLE (
    slug varchar(50),
    sha1 varchar(40),
@@ -11,13 +11,6 @@ TABLE (
 )
 AS $$
 BEGIN
-
-CREATE TEMP TABLE search_string AS
-SELECT 
-'%' || l.classname || '.' || l.function || '%' 
---l.classname || '.' || l.function 
-AS string
-FROM library_call_analysis_dotnetlibraryclass l;
 
 RETURN QUERY
 SELECT 
@@ -36,9 +29,9 @@ AND d1.patch_id = d2.patch_id
 AND d1.start_line_number = d2.start_line_number
 AND d1.type='-' AND d2.type = '+'
 AND EXISTS 
-(SELECT 1 FROM search_string s
-WHERE d1.code LIKE (s.string) 
-AND d2.code LIKE (s.string) )
+(SELECT 1 FROM library_call_analysis_dotnetlibraryclass_search_string s
+WHERE d1.code LIKE ('%' || s.string || '%') 
+AND d2.code LIKE ('%' || s.string || '%') )
 --WHERE d1.code % (s.string) 
 --AND d2.code % (s.string) )
 ;
