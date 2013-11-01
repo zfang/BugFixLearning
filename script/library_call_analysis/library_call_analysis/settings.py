@@ -12,6 +12,9 @@ DATABASES = {
          'autocommit': True,
          },
       }
+
 INSTALLED_APPS = (
       'library_call_analysis'
       )
+
+SECRET_KEY = '$=f-w-nsyh#kb=h40y$sqh**+d6uj1@tg16cx7r^z@fi&amp;kbr2h'
