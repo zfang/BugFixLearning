@@ -12,7 +12,7 @@ AS $$
 BEGIN
 
 RETURN QUERY
-SELECT 
+SELECT DISTINCT
 p.id, p.sha1, 
 d1.start_line_number, 
 d1.line_number AS minus_code_line_num, d2.line_number AS plus_code_line_num, 
