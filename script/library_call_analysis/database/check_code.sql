@@ -15,7 +15,6 @@ c2 CURSOR FOR
 (
    SELECT 1 FROM library_call_analysis_dotnetlibraryclass s
    WHERE NEW.code LIKE ('%' || s.classname || '%') 
-   OR NEW.code LIKE ('%' || s.function || '%') 
    LIMIT 1
 );
 BEGIN

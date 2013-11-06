@@ -15,6 +15,12 @@ class DotnetLibraryClass(models.Model):
       return "namespace: %s\nclassname: %s\nfunction: %s\n" \
             % (namespace, classname, function)
 
+class CSharpKeyword(models.Model):
+   keyword = models.CharField(max_length=30)
+   def __unicode__(self):
+      return "keyword: %s\n" \
+            % (keyword)
+
 class Repository(models.Model):
    slug = models.CharField(max_length=50)
    def __unicode__(self):
