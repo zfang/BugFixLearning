@@ -11,12 +11,6 @@ c1 CURSOR FOR
    AND type != NEW.type
    LIMIT 1
 );
-c2 CURSOR FOR 
-(
-   SELECT 1 FROM library_call_analysis_dotnetlibraryclass s
-   WHERE NEW.code LIKE ('%' || s.classname || '%') 
-   LIMIT 1
-);
 BEGIN
    OPEN c1;
    MOVE c1;
@@ -25,13 +19,6 @@ BEGIN
       RETURN NULL;
    END IF; 
    CLOSE c1;
-
-   OPEN c2;
-   MOVE c2;
-   IF NOT FOUND THEN
-      RETURN NULL;
-   END IF; 
-   CLOSE c2;
 
    RETURN NEW;
 END;

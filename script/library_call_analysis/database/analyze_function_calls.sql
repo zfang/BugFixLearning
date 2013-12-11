@@ -19,7 +19,7 @@ d1.line_number AS minus_code_line_num, d2.line_number AS plus_code_line_num,
 d1.code AS minus_code, d2.code AS plus_code 
 FROM 
 library_call_analysis_repository r, library_call_analysis_patch p, 
-library_call_analysis_diff d1, library_call_analysis_diff d2 
+library_call_analysis_librarycallchangediffview d1, library_call_analysis_librarycallchangediffview d2
 WHERE TRUE
 AND r.slug = _slug 
 AND r.id = p.repo_id
