@@ -52,13 +52,14 @@ if __name__ == "__main__":
 
    for repo in repos:
       for patch in repo.patch_set.all().prefetch_related('diff_set'):
-         if patch.sha1 not in method_call_sets:
-            method_call_sets[patch.sha1] = {'-':set(), '+':set()}
+         key = patch.filename
+         if key not in method_call_sets:
+            method_call_sets[key] = {'-':set(), '+':set()}
          for diff in patch.diff_set.all():
             for match in re.finditer(method_call_pattern, diff.code):
                method_call = match.groups()[2]
                method_calls.add(method_call)
-               method_call_sets[patch.sha1][diff.type].add(method_call)
+               method_call_sets[key][diff.type].add(method_call)
 
    method_calls = list(method_calls)
 
@@ -68,8 +69,14 @@ if __name__ == "__main__":
 
    mats = generate_data()
 
-   write_data_to_file(mats['both'], slug+'_minus_plus.txt')
-   write_data_to_file(mats['-'], slug+'_minus.txt')
-   write_data_to_file(mats['+'], slug+'_plus.txt')
-   write_data_to_file([method_calls], slug+'_method_calls.txt')
-   write_data_to_file([method_calls+types], slug+'_method_calls_with_types.txt')
+   dir = os.getcwd()+'/'+slug+'/'
+   try:
+      os.mkdir(dir)
+   except:
+      pass
+
+   write_data_to_file(mats['both'], dir+'minus_plus.txt')
+   write_data_to_file(mats['-'], dir+'minus.txt')
+   write_data_to_file(mats['+'], dir+'plus.txt')
+   write_data_to_file([method_calls], dir+'method_calls.txt')
+   write_data_to_file([method_calls+types], dir+'method_calls_with_types.txt')
