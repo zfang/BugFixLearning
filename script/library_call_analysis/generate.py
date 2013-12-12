@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 import sys, os, re, threading, difflib, multiprocessing
-from numpy import matrix, unique
+from numpy import matrix
+from itertools import combinations
 from multiprocessing.pool import ThreadPool as Pool
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "library_call_analysis.settings")
@@ -13,66 +14,30 @@ method_calls_dict = {}
 num_method_calls = 0
 method_call_sets = {}
 pool = Pool()
+types = ['-', '+']
 
-def find_rules(transactions, minSup=.05, minConf=.5, nRules=100, sortFlag=1):
-   Rules = [] # tuples of sets
-   FreqItemSets = [] # itemsets of size 1, 2, 3 ...
-
-   M = transactions.shape[0]
-   N = transactions.shape[1]
-   # print M, N
-   # print transactions
-   T = set()
-   means = transactions.mean(0)
-   for i in xrange(means.size):
-      if means.item(i) >= minSup:
-         T.add(i)
-   FreqItemSets.append(T)
-
-   for steps in xrange(2, N+1):
-      T = frozenset(T)
-      if len(T) < 2:
-         break
-      # TODO
-
-   # print FreqItemSets
-
-   return Rules, FreqItemSets
-
-def print_rules(rules, labels):
-   for rule in rules:
-      left_str = ''
-      for fea in rule[0]:
-         left_str = left_str + labels[fea] + ', '
-      left_str = left_str[:-2]
-      rigtht_str = ''
-      for fea in rule[1]:
-         rigtht_str = rigtht_str + labels[fea] + ', '
-      rigtht_str = rigtht_str[:-2]
-      print "{%s} => {%s}, support: %d, confidence: %d" % \
-            (left_str, rigtht_str, rule[2], rule[3])
-
-
-def analyze():
-   # Analyze minus/plus, minus, and plus association
-   mats = [[], [], []]
+def generate_data():
+   # Generate data for minus/plus, minus, and plus association
+   mats = {'both' : [], '-' : [], '+' : []}
+   type_values = {'-' : [1, 0], '+' : [0, 1]}
    for method_call_set in method_call_sets.itervalues():
       rows = {}
-      for type in ['-', '+']:
+      for type in types:
          rows[type] = [0] * num_method_calls
          for method_call in method_call_set[type]:
             rows[type][method_calls_dict[method_call]] = 1
-      mats[0].append(rows['-'] + [1, 0])
-      mats[0].append(rows['+'] + [0, 1])
-      mats[1].append(rows['-'])
-      mats[2].append(rows['+'])
+      for type in types:
+         if len(rows[type]) > 0:
+            mats['both'].append(rows[type] + type_values[type])
+            mats[type].append(rows[type])
+   return mats
 
-   # minus/plus
-   Rules0, FreqItemSets0 = find_rules(matrix(mats[0]))
-   # minus
-   Rules1, FreqItemSets1 = find_rules(matrix(mats[1]))
-   # plus
-   Rules2, FreqItemSets2 = find_rules(matrix(mats[2]))
+def write_data_to_file(data, filename):
+   with open(filename, 'wb') as f:
+      for row in data:
+         for item in row:
+            f.write(str(item) + ' ')
+         f.write('\n')
 
 if __name__ == "__main__":
    if len(sys.argv) < 2:
@@ -101,4 +66,10 @@ if __name__ == "__main__":
    for i in xrange(num_method_calls):
       method_calls_dict[method_calls[i]] = i
 
-   analyze()
+   mats = generate_data()
+
+   write_data_to_file(mats['both'], slug+'_minus_plus.txt')
+   write_data_to_file(mats['-'], slug+'_minus.txt')
+   write_data_to_file(mats['+'], slug+'_plus.txt')
+   write_data_to_file([method_calls], slug+'_method_calls.txt')
+   write_data_to_file([method_calls+types], slug+'_method_calls_with_types.txt')
