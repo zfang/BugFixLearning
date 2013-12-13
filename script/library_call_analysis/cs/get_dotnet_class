@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mono dotnetclassextract.exe $@ | tr -d "\`[0-9]*" \
+   | sed -nr "s/^(\S+) (\S+) \S+ [^:]+::([^\(]+)\(.*$/\1 \2 \3/p" \
+   | sed -r "s/^(\S+) (\S+) \.(ctor|cctor)$/\1 \2 \2/p" \
+   | sort -u \
+   > system_class.dat

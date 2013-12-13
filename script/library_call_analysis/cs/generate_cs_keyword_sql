@@ -1,0 +1,15 @@
+#!/bin/bash
+
+target_table="library_call_analysis_csharpkeyword"
+temp_table="${target_table}_temp"
+filename="cs_keyword"
+
+printf "\
+CREATE TEMP TABLE ${temp_table} (\n\
+   keyword character varying(30) NOT NULL\n\
+);\n\
+\n\
+\\copy ${temp_table} FROM '$(readlink -f ${filename}.dat)' WITH DELIMITER AS ' ';\n\
+\n\
+INSERT INTO ${target_table} (keyword) SELECT * FROM ${temp_table};\
+" > ../database/${filename}.sql

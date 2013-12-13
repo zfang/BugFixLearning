@@ -4,7 +4,8 @@ from django.db import models
 
 LANGUAGE_TYPES = (
       (0, 'C#'),
-      (1, 'C/C++')
+      (1, 'C/C++'),
+      (2, 'Java')
 )
 
 DIFF_TYPES = (
