@@ -81,7 +81,8 @@ if __name__ == "__main__":
 
    for repo in repos:
       for patch in repo.patch_set.all().prefetch_related('diff_set'):
-         key = patch.sha1
+         # per file per commit
+         key = patch.id
          for diff in patch.diff_set.all():
             for match in re.finditer(method_call_pattern, diff.code):
                method_call = match.groups()[2]
